@@ -1,6 +1,5 @@
 # Read & parse input
 string2ints(s) = [parse(Int, s[f]) for f in findall(r"([0-9]+)", s)] 
-rows2card(r) = Matrix{Union{Missing, Int64}}(hcat(r...))
 rows2card(r) = Matrix{Union{Nothing, Int64}}(hcat(r...))
 
 input = filter(x -> length(x) > 0, readlines("04.txt"))
