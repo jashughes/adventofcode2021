@@ -1,69 +1,54 @@
 input = readlines("04.txt")
-calls = split(input[1],",")
+calls = split(input[1], ",")
 card_rows = split.(
     replace.(
         replace.(
             filter(x -> length(x) > 0, input[3:end]), 
             r"( +)" => " "
         ),
-    r"^ " => ""
+        r"^ " => ""
     ), 
     " "
 )
 
+cards = [hcat(card_rows[i-4:i]...) for i = 5:5:length(card_rows)]
+
 # part 1
 
-function score_row(row, call)
-    row[row .== call] .= "-0"
-    row
+function card_call(card, call)
+    card[card .== call] .= "-0"
+    card
 end
 
 function check_card(card)
-    check_rows(card) | check_cols(card)
+    any(all(i -> i == ("-0"), card, dims = 1)) | any(all(i -> i == ("-0"), card, dims = 2))
 end
 
-function check_rows(card)
-    any([all(x .== "-0") for x in card])
-end
 
-function check_cols(card)
-    for col = 1:length(card[1])
-        if all(row[col] == "-0" for row in card) && return true end
-    end
-    false
-end
-
-function play_bingo(card_rows, calls)
-    winner = 0
-    for c in calls
-        card_rows = [score_row(cr, c) for cr in card_rows]
-        for i = 1:5:(length(card_rows) - 4)
-            if check_card(card_rows[i:i+4])
-                winner = sum(sum(parse.(Int, c) for c in card_rows[i:i+4])) * parse(Int, c)
-                break
-            end
-        end
-        if winner > 0 
-            break 
-        end
-    end
-    winner 
-end
-
-function lose_bingo(card_rows, calls)
-    scores, winner = zeros(100), 0
-    for c in calls
-        card_rows = [score_row(cr, c) for cr in card_rows]
-        for i = 1:5:(length(card_rows) - 4)
-            idx = Int(ceil(i/5))
-            if check_card(card_rows[i:i+4]) & (scores[idx] == 0)
-                scores[idx] = sum(sum(parse.(Int, c) for c in card_rows[i:i+4])) * parse(Int, c)
-                winner = scores[idx]
+function play_bingo(cards, calls)
+    for c in calls 
+        cards = [card_call(cr, c) for cr in cards]
+        for card in cards
+            if check_card(card)
+                return sum(parse.(Int, card)) * parse(Int, c)
             end
         end
     end
-    winner
 end
 
-println("Part 1: ", play_bingo(deepcopy(card_rows), calls))
-println("Part 2: ", lose_bingo(deepcopy(card_rows), calls))
+function lose_bingo(cards, calls)
+    scores, winner = zeros(length(cards)), 0
+    for c in calls
+        cards = [card_call(cr, c) for cr in cards]
+        for i in 1:length(cards)
+            if check_card(cards[i]) & (scores[i] == 0)
+                scores[i] = sum(parse.(Int, cards[i])) * parse(Int, c)
+                winner = scores[i]
+            end
+        end
+    end
+    Int(winner)
+end
+
+println("Part 1: ", play_bingo(deepcopy(cards), calls))
+println("Part 2: ", lose_bingo(deepcopy(cards), calls))
