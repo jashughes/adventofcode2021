@@ -1,54 +1,38 @@
-input = readlines("04.txt")
-calls = split(input[1], ",")
-card_rows = split.(
-    replace.(
-        replace.(
-            filter(x -> length(x) > 0, input[3:end]), 
-            r"( +)" => " "
-        ),
-        r"^ " => ""
-    ), 
-    " "
-)
+# Read & parse input
+string2ints(s) = [parse(Int, s[f]) for f in findall(r"([0-9]+)", s)] 
+rows2card(r) = Matrix{Union{Missing, Int64}}(hcat(r...))
+rows2card(r) = Matrix{Union{Nothing, Int64}}(hcat(r...))
 
-cards = [hcat(card_rows[i-4:i]...) for i = 5:5:length(card_rows)]
+input = filter(x -> length(x) > 0, readlines("04.txt"))
+calls = parse.(Int, split(input[1], ","))
+card_rows = [string2ints(i) for i in input[2:end]]
+cards = [rows2card(card_rows[i-4:i]) for i = 5:5:length(card_rows)]
 
-# part 1
 
 function card_call(card, call)
-    card[card .== call] .= "-0"
+    card[card .== call] .= nothing
     card
 end
 
-function check_card(card)
-    any(all(i -> i == ("-0"), card, dims = 1)) | any(all(i -> i == ("-0"), card, dims = 2))
+function has_bingo(card)
+    any(all(isnothing, card, dims = 1)) | any(all(isnothing, card, dims = 2))
 end
 
-
-function play_bingo(cards, calls)
-    for c in calls 
-        cards = [card_call(cr, c) for cr in cards]
-        for card in cards
-            if check_card(card)
-                return sum(parse.(Int, card)) * parse(Int, c)
-            end
-        end
-    end
-end
-
-function lose_bingo(cards, calls)
-    scores, winner = zeros(length(cards)), 0
+function bingo_scores(cards, calls)
+    scores, winners = [], Set()
     for c in calls
         cards = [card_call(cr, c) for cr in cards]
         for i in 1:length(cards)
-            if check_card(cards[i]) & (scores[i] == 0)
-                scores[i] = sum(parse.(Int, cards[i])) * parse(Int, c)
-                winner = scores[i]
+            if !(i in winners) && has_bingo(cards[i])
+                push!(scores, c * sum(filter(!isnothing, cards[i])))
+                push!(winners, i)
             end
         end
     end
-    Int(winner)
+    scores
 end
 
-println("Part 1: ", play_bingo(deepcopy(cards), calls))
-println("Part 2: ", lose_bingo(deepcopy(cards), calls))
+scores = bingo_scores(cards, calls)
+
+println("Part 1: ", scores[1])
+println("Part 2: ", scores[end])
