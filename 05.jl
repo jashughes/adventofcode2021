@@ -16,8 +16,8 @@ end
 println("Part 1: ", length(filter(>=(2), paths)))
 
 for i in diags
-    xs = collect(range(i[1], i[3], step = sign(i[3]-i[1])))
-    ys = collect(range(i[2], i[4], step = sign(i[4]-i[2])))
+    xs = range(i[1], i[3], step = sign(i[3]-i[1]))
+    ys = range(i[2], i[4], step = sign(i[4]-i[2]))
     for p in zip(xs, ys) paths[p...] += 1 end
 end
 
