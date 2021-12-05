@@ -4,24 +4,22 @@ function count_pos(a)
     [sum(x) for x in eachrow(hcat(a...))]
 end
 
-function array_to_binary(a)
-    parse(Int, join(a, ""), base = 2)
-end
+array_to_binary(a) = parse(Int, join(a, ""), base = 2)
 
 function scan_array(a, i, f)
     counts = count_pos(a)
-    ci = f(counts[i], length(a)/2) * 1
-    [x for x in a if x[i] == ci]
+    ci = Int(f(counts[i], length(a)/2))
+    filter(x -> x[i] == ci, a)
 end
 
 # part 1
 counts = count_pos(input)
-gamma  = array_to_binary([(c >= 500) * 1 for c in counts])
-epsilon = array_to_binary([(c < 500) * 1 for c in counts])
+gamma  = array_to_binary([Int(c >= 500) for c in counts])
+epsilon = array_to_binary([Int(c < 500) for c in counts])
 
 # part 2
 function solve(input)
-    o2, co2 = deepcopy(input), deepcopy(input)
+    o2, co2 = input, input
     for i = 1:length(input[1])
         if length(o2) > 1
             o2 = scan_array(o2, i, >=)
