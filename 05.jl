@@ -9,8 +9,8 @@ diags = filter(x -> x[1] != x[3] && x[2] != x[4], deepcopy(input))
 
 paths = zeros(Int8, d, d)
 for i in hv
-    xs = sort([i[1], i[3]]) .+ 1
-    ys = sort([i[2], i[4]]) .+ 1
+    xs = sort([i[1], i[3]]) 
+    ys = sort([i[2], i[4]])
     paths[xs[1]:xs[2], ys[1]:ys[2]] .+= 1
 end
 length(filter(>=(2), paths))
@@ -18,8 +18,8 @@ length(filter(>=(2), paths))
 println("Part 1: ", length(filter(>=(2), paths)))
 
 for i in diags
-    xs = collect(range(i[1], i[3], step = sign(i[3]-i[1]))) .+ 1
-    ys = collect(range(i[2], i[4], step = sign(i[4]-i[2]))) .+ 1
+    xs = collect(range(i[1], i[3], step = sign(i[3]-i[1])))
+    ys = collect(range(i[2], i[4], step = sign(i[4]-i[2])))
 
     for n = 1:length(xs)
         paths[xs[n], ys[n]] += 1
