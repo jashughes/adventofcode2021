@@ -2,7 +2,7 @@
 string2ints(s) = [parse(Int, s[f]) for f in findall(r"([0-9]+)", s)] 
 input = [string2ints(l) for l in readlines("05.txt")]
 
-d = maximum(hcat(input...)) + 2
+d = maximum(hcat(input...)) + 1
 
 hv = filter(x -> x[1] == x[3] || x[2] == x[4], deepcopy(input))
 diags = filter(x -> x[1] != x[3] && x[2] != x[4], deepcopy(input))
