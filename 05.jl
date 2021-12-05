@@ -26,4 +26,4 @@ for i in diags
     end
 end
 
-println("Part 1: ", length(filter(>=(2), paths)))
+println("Part 2: ", length(filter(>=(2), paths)))
