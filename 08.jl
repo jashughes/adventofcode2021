@@ -103,9 +103,6 @@ function eliminate_by_freq!(d, d2)
     d
 end
 
-test = ["acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab", "cdfeb fcadb cdfeb cdbaf"]
-
-easy(input[1], deepcopy(side2lett), num2side, easyd)
 
 function decode_line(l, side2lett, num2side, easyd)
     d = easy(l, deepcopy(side2lett), num2side, easyd)
