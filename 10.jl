@@ -28,7 +28,6 @@ function cost_of_corruption(str, op = op)
 end
 
 costs = [cost_of_corruption(s) for s in input]
-uncorrupted = sort(filter(x -> x[1] == 0, costs))
 
 println("Part 1: ", sum(filter(x -> x[1] == 1, costs))[2])
-println("Part 2: ", halfway(uncorrupted)[2])
+println("Part 2: ", halfway(sort(filter(x -> x[1] == 0, costs)))[2])
