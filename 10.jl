@@ -3,6 +3,7 @@ input = split.(readlines("10.txt"), "")
 op = Dict("(" => ")", "[" => "]", "{" => "}", "<" => ">")
 prices1 = Dict(")" => 3, "]" => 57, "}" => 1197, ">" => 25137)
 prices2 = Dict(")" => 1, "]" => 2, "}" => 3, ">" => 4)
+halfway(arr) = arr[Int(ceil(length(arr)/2))]
 
 function cost(arr, tab = prices2)
     score = 0
@@ -30,4 +31,4 @@ costs = [cost_of_corruption(s) for s in input]
 uncorrupted = sort(filter(x -> x[1] == 0, costs))
 
 println("Part 1: ", sum(filter(x -> x[1] == 1, costs))[2])
-println("Part 2: ", uncorrupted[Int(ceil(length(uncorrupted)/2))][2])
+println("Part 2: ", halfway(uncorrupted)[2])
