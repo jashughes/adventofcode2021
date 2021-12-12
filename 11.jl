@@ -27,14 +27,6 @@ function step(input)
     tot
 end
 
-function cycles(input, n = 100)
-    tot = 0
-    for i = 1:n
-        tot += step(input)
-    end
-    tot
-end
-
 function cycles(input, to_flash, n)
     tot, i = 0, 0
     while (!to_flash && i < n) || (to_flash && length(unique(input)) > 1)
