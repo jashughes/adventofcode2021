@@ -17,7 +17,6 @@ function flash!(input)
     tot
 end
 
-
 function step(input)
     input .+= 1
     tot = 0
@@ -27,8 +26,6 @@ function step(input)
     input[input .== nothing] .= 0
     tot
 end
-
-input = deepcopy(input1)
 
 function cycles(input, n = 100)
     tot = 0
