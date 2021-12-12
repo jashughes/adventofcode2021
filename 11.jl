@@ -35,14 +35,14 @@ function cycles(input, n = 100)
     tot
 end
 
-function cycles2(input)
+function cycles(input, to_flash, n)
     tot, i = 0, 0
-    while length(unique(input)) > 1
+    while (!to_flash && i < n) || (to_flash && length(unique(input)) > 1)
         tot += step(input)
         i += 1
     end
-    i
+    to_flash ? i : tot
 end
 
-println("Part 1: ", cycles(deepcopy(input)))
-println("Part 2: ", cycles2(deepcopy(input)))
+println("Part 1: ", cycles(deepcopy(input), false, 100))
+println("Part 2: ", cycles(deepcopy(input), true, 100))
