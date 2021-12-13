@@ -1,29 +1,30 @@
-using MetaGraphs
 using LightGraphs
+# Utility Functions
+inv_dict(r) = Dict(r[k] => k for k in keys(r))
+islower(s) = all(islowercase(c) for c in s)
+isupper(s) = all(isuppercase(c) for c in s)
+add_room!(g, r1, r2, rooms) = add_edge!(g, rooms[r1], rooms[r2])
+
 # read in input, identify unique rooms
 room_set = Set()
 input = split.(readlines("12.txt"), "-")
 for l in input push!(room_set, l[1], l[2]) end
 
-# dictionary of key to indices/indices to keys
-inv_dict(r) = Dict(r[k] => k for k in keys(r))
+# dictionary of key to indices/indices to keys & room classifications
 rooms = Dict(k => v for (k,v) in zip(room_set, 1:length(room_set)))
 idx = inv_dict(rooms)
 
 # create a graph
-add_room!(g, r1, r2, rooms) = add_edge!(g, rooms[r1], rooms[r2])
 g = Graph(length(room_set))
 for l in input add_room!(g, l[1], l[2], rooms) end
 
-
-# Functions
-function is_invalid(path, idx, max)
-    rn = path[end]
+# Puzzle solving functions
+function is_invalid(path, rn, idx, max)
     idx[rn] == "start" && return true
     idx[rn] == "end" && return false
-    uppercase(idx[rn]) == idx[rn] && return false
+    isupper(idx[rn]) && return false
     
-    lowers = filter(x -> lowercase(x) == x, [idx[p] for p in path])
+    lowers = filter(islower, [idx[p] for p in vcat(path, rn)])
     (length(lowers) - length(unique(lowers))) > max
 end
 
@@ -31,14 +32,13 @@ function find_paths(g, path, idx, max)
     neighbours = outneighbors(g, path[end])
     paths_out = []
     for rn in neighbours
+        if is_invalid(path, rn, idx, max) continue end
         new_path = deepcopy(path)
         append!(new_path, rn)
-        if is_invalid(new_path, idx, max) continue end
         push!(paths_out, new_path)
     end
     paths_out
 end
-
 
 function finish_paths(g, rooms, idx, max)
     unfinished = [[rooms["start"]]]
