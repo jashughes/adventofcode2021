@@ -1,6 +1,5 @@
-input = readlines("13.txt")
-div = 861
-#div = 18
+# Read input, store as matrix of dots (values > 0)
+input, div = readlines("13.txt"), 861
 dots = [parse.(Int, x) .+ 1 for x in split.(input[1:div], ",")]
 dotCI = [CartesianIndex((d...)) for d in dots]
 folds = input[div + 2:end]
