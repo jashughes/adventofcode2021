@@ -1,8 +1,8 @@
 # Read input, store as matrix of dots (values > 0)
-input, div = readlines("13.txt"), 861
-dots = [parse.(Int, x) .+ 1 for x in split.(input[1:div], ",")]
+using SparseArrays
+dots, folds = split.(split(read("13.txt", String), "\n\n"), "\n")
+dots = [parse.(Int, x) .+ 1 for x in split.(dots, ",")]
 dotCI = [CartesianIndex((d...)) for d in dots]
-folds = input[div + 2:end]
 sheet = Matrix{Int64}(zeros(maximum(hcat(dots...), dims = 2)...))
 sheet[dotCI] .= 1
 
