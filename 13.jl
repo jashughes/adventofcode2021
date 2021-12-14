@@ -2,35 +2,18 @@
 using SparseArrays
 dots, folds = split.(split(read("13.txt", String), "\n\n"), "\n")
 dots = [parse.(Int, x) .+ 1 for x in split.(dots, ",")]
-dotCI = [CartesianIndex((d...)) for d in dots]
-sheet = Matrix{Int64}(zeros(maximum(hcat(dots...), dims = 2)...))
-sheet[dotCI] .= 1
+sheet = sparse(last.(dots), first.(dots), true)
 
-foldline(instr) = parse(Int, match(r"([0-9]+)", instr)[1]) + 1
-folddir(instr) = contains(instr, r"x=") ? 1 : 2
-
-function fold(sheet, instr)
-    l, d = foldline(instr), folddir(instr)
-    if d == 1
-        sheet[1:l-1,:] + reverse(sheet[l+1:end,:], dims = d)
-    else
-        sheet[:,1:l-1] + reverse(sheet[:,l+1:end], dims = d)
-    end
-end
+foldline(instr) = parse(Int, match(r"([0-9]+)", instr)[1])
+fold(a, l, x) = x ? a[:,1:l] + a[:,end:-1:l+2] : a[1:l,:] + a[end:-1:l+2,:]
 
 function origami(sheet, folds)
     for f in folds
-        sheet = fold(sheet, f)
+        sheet = fold(sheet, foldline(f), contains(f, r"x="))
     end
     sheet
 end
 
-function printmanual(manual)
-    for j = 1:size(manual)[2]
-        println(join(ifelse.(manual[:,j] .> 0, "#", " "), ""))
-    end
-end
-
-println("Part 1: ", sum(fold(sheet, folds[1]) .> 0))
+println("Part 1: ", sum(origami(sheet, [folds[1]]) .> 0))
 println("Part 2:")
-printmanual(origami(sheet, folds))
+display(origami(sheet, folds))
