@@ -4,12 +4,6 @@ d = Dict(k => v for (k,v) in split.(insrts, " -> "))
 p = Dict(k => [k[1] * v, v * k[2]] for (k, v) in d)
 max_minus_min(arr) = maximum(arr) - minimum(arr)
 
-function polymerize(str, d)
-    pairs = [str[i:i+1] for i = 1:length(str)-1]
-    news = [d[p] for p in pairs]
-    join([p[1] * n for (p, n) in zip(pairs, news)], "") * pairs[end][2]
-end
-
 function pairplicate(p, pairs, tallies)
     stoichiometry = [[p[i], get(tallies, i, 1)] for i in pairs]
     nt = Dict()
