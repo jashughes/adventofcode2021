@@ -8,8 +8,8 @@ function pairplicate(p, pairs, tallies)
     stoichiometry = [[p[i], get(tallies, i, 1)] for i in pairs]
     nt = Dict()
     for (st, n) in stoichiometry
-        nt[st[1]] = get(nt, st[1], 0) + 1 * n
-        nt[st[2]] = get(nt, st[2], 0) + 1 * n
+        nt[st[1]] = get(nt, st[1], 0) + n
+        nt[st[2]] = get(nt, st[2], 0) + n
     end
     nt
 end
@@ -23,7 +23,7 @@ function tally2freq(tallies, str)
     freq
 end
 
-function polyshort(str, p, N)
+function polymerize(str, p, N)
     pairs = [str[i:i+1] for i = 1:length(str)-1]
     tallies = Dict()
     for _ = 1:N
@@ -33,5 +33,5 @@ function polyshort(str, p, N)
     tally2freq(tallies, str)
 end
 
-println("Part 1: ", max_minus_min(values(polyshort(tmpl[1], p, 10))))
-println("Part 2: ", max_minus_min(values(polyshort(tmpl[1], p, 40))))
+println("Part 1: ", max_minus_min(values(polymerize(tmpl[1], p, 10))))
+println("Part 2: ", max_minus_min(values(polymerize(tmpl[1], p, 40))))
