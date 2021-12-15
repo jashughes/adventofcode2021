@@ -22,26 +22,16 @@ function createGraph(input)
     mg, lu[CI((1,1))], lu[CI((size(input)...))]
 end
 
-function cave_row(start_chamber, n)
-    cave, new_chamber = deepcopy(start_chamber), deepcopy(start_chamber)
-    for _ = 2:n
-        new_chamber = deepcopy(new_chamber) .+ 1
-        new_chamber[new_chamber .> 9] .= 1
-        cave = hcat(cave, new_chamber)
-    end
-    cave
-end
-
-function bigger_cave(input, n = 5)
-    big_cave = cave_row(input, n)
-    seed_chamber = deepcopy(input)
-    for _ = 2:n
-        seed_chamber = deepcopy(seed_chamber) .+ 1
-        seed_chamber[seed_chamber .> 9] .= 1
-        new_row = cave_row(seed_chamber, n)
-        big_cave = vcat(big_cave, new_row)
-    end
-    big_cave
+function bigger_cave(m)
+    m = [
+         m    m.+1 m.+2 m.+3 m.+4
+         m.+1 m.+2 m.+3 m.+4 m.+5
+         m.+2 m.+3 m.+4 m.+5 m.+6
+         m.+3 m.+4 m.+5 m.+6 m.+7
+         m.+4 m.+5 m.+6 m.+7 m.+8
+        ]
+    m .= mod1.(m, 9)
+    m
 end
 
 function solve(input)
