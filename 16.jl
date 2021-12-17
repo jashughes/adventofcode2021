@@ -1,21 +1,13 @@
 input = read("16.txt", String)
 h2bt = Dict(
-    "0" => "0000",
-    "1" => "0001",
-    "2" => "0010",
-    "3" => "0011",
-    "4" => "0100",
-    "5" => "0101",
-    "6" => "0110",
-    "7" => "0111",
-    "8" => "1000",
-    "9" => "1001",
-    "A" => "1010",
-    "B" => "1011",
-    "C" => "1100",
-    "D" => "1101",
-    "E" => "1110",
-    "F" => "1111"
+    "0" => "0000", "8" => "1000",
+    "1" => "0001", "9" => "1001",
+    "2" => "0010", "A" => "1010",
+    "3" => "0011", "B" => "1011",
+    "4" => "0100", "C" => "1100",
+    "5" => "0101", "D" => "1101",
+    "6" => "0110", "E" => "1110",
+    "7" => "0111", "F" => "1111"
 )
 bitstr2int(str) = parse(Int, str, base = 2)
 hex2packet(str, d = h2bt) = join([d[s] for s in split(str, "")], "")
@@ -31,23 +23,22 @@ function parseLiteral(str)
 end
 
 function readit(str)
-    v = bitstr2int(str[1:3])
-    tp = bitstr2int(str[4:6])
+    v, tp = bitstr2int(str[1:3]), bitstr2int(str[4:6])
+    
     if tp == 4
         lit, x = parseLiteral(str[7:end])
         return v, lit, x
     end 
-    ltp = str[7]
-    if ltp == '0'
-        totlen = bitstr2int(str[8:22])
-        x = 23 + totlen
+    
+    if str[7] == '0'
+        x = 23 + bitstr2int(str[8:22])
         new_v, lit = parse2end(str[23:x-1])
         v += new_v
         return v, op(tp, lit), x
     end
-    nsub = bitstr2int(str[8:18])
+
     lit, x = [], 19
-    for _ = 1:nsub
+    for _ = 1:bitstr2int(str[8:18])
         new_v, new_lit, new_x = readit(str[x:end])
         push!(lit, new_lit)
         v += new_v
