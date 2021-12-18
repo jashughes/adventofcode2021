@@ -58,6 +58,20 @@ function splitit(str)
     str[1:ns-1] * newspl * str[ns+2:end]
 end
 
+function magnitude(str)
+    while sum(s == "[" for s in split(str, "")) > 0
+        str = repl_mag(str)
+    end
+    parse(Int, str)
+end
+
+function repl_mag(str)
+    s1 = findfirst(r"\[[0-9]+\,[0-9]+\]", str)
+    n = string2ints(str[s1])
+    res = 3 * n[1] + 2 * n[2]
+    str[1:s1[1]-1] * string(res) * str[s1[end]+1:end]
+end
+
 function plus(str1, str2)
     str = "[" * str1 * "," * str2 * "]"
     old, ex = "", ""
@@ -78,20 +92,6 @@ function snailfish(input)
         str = plus(str, i)
     end
     magnitude(str)
-end
-
-function magnitude(str)
-    while sum(s == "[" for s in split(str, "")) > 0
-        str = repl_mag(str)
-    end
-    parse(Int, str)
-end
-
-function repl_mag(str)
-    s1 = findfirst(r"\[[0-9]+\,[0-9]+\]", str)
-    n = string2ints(str[s1])
-    res = 3 * n[1] + 2 * n[2]
-    str[1:s1[1]-1] * string(res) * str[s1[end]+1:end]
 end
 
 function find2(input)
