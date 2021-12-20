@@ -1,6 +1,8 @@
 using LinearAlgebra
 st2ints(s) = [parse(Int, s[f]) for f in findall(r"(-*[0-9]+)", s)] 
 add_scanner!(d, i) = d[match(r"([0-9]+)", i[1])[1]] = [st2ints(x) for x in i[2:end]]
+manhattan(a1, a2) = sum(abs.(a1-a2))
+
 input = split.(split(read("19.txt", String), "\n\n"), "\n")
 d = Dict()
 for i in input add_scanner!(d, i) end
@@ -73,10 +75,6 @@ function align_scanner(scanner1, scanner2, ts)
     [], []
 end
 
-s2loc, beacons = pinpoint_scanner(scanner1, scanner2, ts)
-
-
-
 function beckon_beacons(d, n = 12)
     scanners = sort([k for k in keys(d)])
     sloc = Dict(scanners[1] => [0, 0, 0])
@@ -101,15 +99,6 @@ function beckon_beacons(d, n = 12)
     beacons, sloc
 end
 
-
-d = Dict()
-for i in input add_scanner!(d, i) end
-beacons, sloc = beckon_beacons(d)
-
-
-
-manhattan(a1, a2) = sum(abs.(a1-a2))
-
 function manhattanpairwise(arr)
     ds = []
     for a1 in arr
@@ -121,4 +110,8 @@ function manhattanpairwise(arr)
     maximum(ds)
 end
 
-manhattanpairwise(values(sloc))
+d = Dict()
+for i in input add_scanner!(d, i) end
+beacons, sloc = beckon_beacons(d)
+println("Part 1: ", length(beacons))
+println("Part 2: ", manhattanpairwise(values(sloc)))
