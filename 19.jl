@@ -35,33 +35,6 @@ function offset(scanner1, scanner2)
     offs
 end
 
-function find_beacons(s1, rs2, dx)
-    beacons = Dict()
-    for b1 in s1
-        for b2 in rs2
-            if b1 - b2 == dx
-                beacons[b1] = b2
-            end
-        end
-    end
-    beacons
-end
-
-function pinpoint_scanner(scanner1, scanner2, ts)
-    for t in ts
-        rs2 = [t * v  for v in scanner2]
-        offs = offset(scanner1, rs2)
-        
-        if maximum(offs[k][1] for k in keys(offs)) >=12
-            dx = pop!(filter(k -> offs[k][1] >= 12, keys(offs)))
-            p1, p1prime = offs[dx][2]
-            beacons = find_beacons(scanner1, rs2, dx)
-            return p1, p1prime, beacons
-        end
-    end
-    [], [], Dict()
-end
-
 function align_scanner(scanner1, scanner2, ts)
     for t in ts
         rs2 = [t * v  for v in scanner2]
