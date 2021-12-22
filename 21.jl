@@ -33,4 +33,4 @@ function ftw(p1,p2,s1=0,s2=0)
 end
 
 println("Part 1: ", play(input...))
-println("Part 2: ", maximum(ftw(input...))
+println("Part 2: ", maximum(ftw(input...)))
