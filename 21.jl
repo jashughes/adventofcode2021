@@ -1,6 +1,7 @@
 
 input = parse.(Int, last.(split.(readlines("21.txt"), ":")))
 roll(d) = [mod1(x, 100) for x in d:d+2]
+freq = Dict(3=>1, 4=>3,5=>6,6=>7,7=>6,8=>3,9=>1)
 
 function play(p1, p2)
     d = 1
@@ -19,31 +20,6 @@ function play(p1, p2)
     minimum(scores) * nd
 end
 
-println("Part 1: ", play(input...))
-
-freq = Dict(3=>1, 4=>3,5=>6,6=>7,7=>6,8=>3,9=>1)
-
-function brokenftw(p1,p2,s1,s2,n1,n2, freq)
-    s1 >= 21 && return [n1, 0]
-    s2 >= 21 && return [0, n2]
-    
-    wins = [0, 0]
-    for (k1, v1) in freq
-        for (k2, v2) in freq
-            wins += ftw(
-                mod1(k1 + p1, 10),      mod1(k2 + p2, 10),
-                mod1(k1 + p1, 10) + s1, mod1(k2 + p2, 10) + s2,
-                v1 * n1, v2 * n2, freq
-            )
-        end
-    end
-    wins
-end
-
-
-
-freq = Dict(3=>1, 4=>3,5=>6,6=>7,7=>6,8=>3,9=>1)
-
 function ftw(p1,p2,s1=0,s2=0)
     s2 >= 21 && return [0, 1]
     
@@ -56,4 +32,5 @@ function ftw(p1,p2,s1=0,s2=0)
     wins
 end
 
+println("Part 1: ", play(input...))
 println("Part 2: ", maximum(ftw(input...))
