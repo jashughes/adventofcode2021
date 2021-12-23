@@ -27,9 +27,12 @@ end
 # Part 2
 function chunk(input)
     xs, ys, zs = UniqSpts(input, 1:2), UniqSpts(input, 3:4), UniqSpts(input, 5:6)
-    xs, ys, zs = push!(xs, xs[end] + 1), push!(ys, ys[end] + 1), push!(zs, zs[end] + 1)
+    append!(xs, xs .+ 1), append!(ys, ys .+ 1), append!(zs, zs .+ 1)
+    xs, ys, zs = sort(xs), sort(ys), sort(zs)
     tot = 0
+    
     for xi = 2:length(xs)
+        println(xi)
         x1,x2 = xs[xi-1:xi] .+ [0, -1]
         for yi = 2:length(ys)
             y1,y2 = ys[yi-1:yi] .+ [0, -1]
