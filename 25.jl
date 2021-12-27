@@ -11,37 +11,28 @@ function nxt(p, val, d = size(input), dir = dir)
     np
 end
 
+function checkAhead(m, mo, sym, moves)
+    aheads = CI{2}[]
+    for ci in CartesianIndices(axes(m))
+        if m[ci] != sym continue end
+        np = nxt(ci, m[ci])
+        if m[np] != sym && m[np] != 'v' && mo[np] == '.'
+            push!(aheads, np)
+            moves += 1
+        else
+            push!(aheads, ci)
+        end
+    end
+    aheads, moves
+end
 
 function step(m)
     mo = Matrix{Char}(undef, size(m)...)
     mo .= '.'
-    moves, lefts, downs = 0, CI{2}[], CI{2}[]
-    for ci in CartesianIndices(axes(m))
-        if m[ci] != '>' continue end
-        np = nxt(ci, m[ci])
-        if m[np] == '.'
-            push!(lefts, np)
-            moves += 1
-        else
-            push!(lefts, ci)
-        end
-    end
-
-    mo[lefts] .= '>'
-
-    for ci in CartesianIndices(axes(m))
-        if m[ci] != 'v' continue end
-        np = nxt(ci, m[ci])
-        if m[np] != 'v' && mo[np] == '.'
-            push!(downs, np)
-            moves += 1
-        else
-            push!(downs, ci)
-        end
-    end
-
-    mo[downs] .= 'v'
-
+    aheads, moves = checkAhead(m, mo, '>', 0)
+    mo[aheads] .= '>'
+    aheads, moves = checkAhead(m, mo, 'v', moves)
+    mo[aheads] .= 'v'
     mo, moves
 end
 
@@ -55,4 +46,3 @@ function cucumberMoves(m)
 end
 
 println("Part 1: ", cucumberMoves(deepcopy(input)))
-
