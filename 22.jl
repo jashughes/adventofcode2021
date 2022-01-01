@@ -5,21 +5,17 @@ vol(t1,t2,t3) = (t1[2] - t1[1] + 1) * (t2[2] - t2[1] + 1) * (t3[2] - t3[1] + 1)
 tupled(arr) = [(arr[1], arr[2]), (arr[3], arr[4]), (arr[5], arr[6])]
 
 input = [(match(r"([a-z]+) ", s)[1], st2ints(s)) for s in readlines("22.txt")]
+instr, coords = first.(input), last.(input)
 
 # Part 1
-function flicker(input)
-    mn = minimum([minimum(i[2]) for i in input])
-    mx = maximum([maximum(i[2]) for i in input]) + 1
-    d = (mx-mn)
-    m = zeros(Int64, d, d, d)
+function flicker(instr, coords, limit = 50)
+    initproc = findall(x -> maximum(abs.(x)) <= limit, coords)
+    cs = [c .+ limit for c in coords[initproc]]
+    is = instr[initproc]
+    m = zeros(Int64, 2 * limit, 2 * limit, 2 * limit)
 
-    for i in input
-        instr, p = i[1], i[2] .+ mx
-        if instr == "on"
-            m[p[1]:p[2], p[3]:p[4], p[5]:p[6]] .= 1
-        else
-            m[p[1]:p[2], p[3]:p[4], p[5]:p[6]] .= 0
-        end
+    for (i, c) in zip(is, cs)
+        m[c[1]:c[2], c[3]:c[4], c[5]:c[6]] .= i == "on" ? 1 : 0
     end
     sum(m)
 end
@@ -57,5 +53,5 @@ function chunk(input)
     tot
 end
 
-println("Part 1: ", flicker(input[1:20]))
+println("Part 1: ", flicker(instr, coords))
 println("Part 2: ", chunk(input))
